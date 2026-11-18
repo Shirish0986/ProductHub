@@ -2,6 +2,13 @@
 
 A responsive product inventory and shopping-cart application built with **HTML, CSS and Core JavaScript (ES6+)**. No React, Angular, jQuery, or JavaScript libraries are used.
 
+## Live Demo
+
+🌐 https://producthub-assign.netlify.app
+
+💻 **GitHub Repository:**
+https://github.com/Shirish0986/ProductHub
+
 ## Features
 
 - **Product CRUD:** Create, view, edit and delete products with field validation.
@@ -48,6 +55,7 @@ ProductHub/
     ├── api.js
     ├── productStore.js
     ├── cartStore.js
+    ├── imageStore.js
     ├── ui.js
     ├── validation.js
     └── utils.js
@@ -94,13 +102,6 @@ The app reads from [DummyJSON Products](https://dummyjson.com/products) and its 
 - [ ] Check subtotal, tax and total.
 - [ ] Refresh and confirm cart remains.
 - [ ] Clear filters and test mobile layout.
-
-## GitHub submission
-
-1. Create a new GitHub repository (for example, `producthub-advanced-js`).
-2. Upload the project files/folders—not the ZIP itself.
-3. Add the repository URL to your submission.
-4. Record a short demo showing API loading, search/filter/sort, CRUD, cart and LocalStorage persistence.
 
 
 ## Adding product photos
