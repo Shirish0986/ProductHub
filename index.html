@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ProductHub | Product Management</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand-lockup"><span class="brand-mark">P</span><div><h1>ProductHub</h1><p>Inventory &amp; storefront management</p></div></div>
+    <button id="cart-toggle" class="cart-btn" aria-controls="cart-panel" aria-expanded="false">
+      <span class="cart-label">Cart</span><span id="cart-badge" class="cart-count">0</span>
+    </button>
+  </header>
+
+  <div id="banner" class="banner" hidden></div>
+
+  <main>
+    <section class="intro">
+      <div>
+        <p class="eyebrow">OVERVIEW</p>
+        <h2>Product inventory</h2>
+        <p class="intro-copy">Manage your catalog, monitor stock, and build your cart.</p>
+      </div>
+      <div class="api-status" id="api-status"><span class="status-dot"></span><span>Connecting to product API…</span></div>
+    </section>
+
+    <section class="stats-grid" aria-label="Inventory statistics">
+      <article class="stat-card"><div class="stat-icon stat-icon--purple">▦</div><div><span class="stat-label">Total products</span><strong id="stat-products">0</strong></div></article>
+      <article class="stat-card"><div class="stat-icon stat-icon--orange">!</div><div><span class="stat-label">Low stock</span><strong id="stat-low-stock">0</strong><small>10 units or fewer</small></div></article>
+      <article class="stat-card"><div class="stat-icon stat-icon--blue">◈</div><div><span class="stat-label">Categories</span><strong id="stat-categories">0</strong></div></article>
+      <article class="stat-card"><div class="stat-icon stat-icon--green">⌑</div><div><span class="stat-label">Cart items</span><strong id="stat-cart">0</strong></div></article>
+    </section>
+
+    <section class="catalog-section">
+      <div class="catalog-heading">
+        <div><h2>Catalog</h2><p id="result-count" class="muted" aria-live="polite"></p></div>
+        <button id="new-product" class="primary-action">＋ Add product</button>
+      </div>
+    <section class="toolbar" aria-label="Search, filter and sort">
+      <input id="search" type="search" placeholder="Search title, brand or description…" aria-label="Search products">
+      <select id="category" aria-label="Filter by category">
+        <option value="all">All categories</option>
+      </select>
+      <select id="sort" aria-label="Sort products">
+        <option value="title-asc">Name A–Z</option>
+        <option value="title-desc">Name Z–A</option>
+        <option value="price-asc">Price: low to high</option>
+        <option value="price-desc">Price: high to low</option>
+        <option value="rating-desc">Top rated</option>
+      </select>
+      <input id="min-price" type="number" min="0" step="0.01" placeholder="Min $" aria-label="Minimum price">
+      <input id="max-price" type="number" min="0" step="0.01" placeholder="Max $" aria-label="Maximum price">
+      <button id="clear-filters" class="ghost">Clear filters</button>
+    </section>
+
+    <p id="loading" class="loading" hidden>Loading products…</p>
+    <section id="product-grid" class="grid" aria-live="polite"></section>
+    </section>
+    <footer class="app-footer">
+      <span>ProductHub · Built with Core JavaScript (ES6+)</span>
+      <span>Demo product data powered by DummyJSON</span>
+    </footer>
+  </main>
+
+  <aside id="cart-panel" class="cart-panel" aria-label="Shopping cart">
+    <div class="cart-panel__head">
+      <h2>Your cart</h2>
+      <button id="cart-close" class="ghost" aria-label="Close cart">✕</button>
+    </div>
+
+    <ul id="cart-items" class="cart-list"></ul>
+
+    <dl class="totals">
+      <div><dt>Items</dt><dd id="cart-count">0</dd></div>
+      <div><dt>Subtotal</dt><dd id="cart-subtotal">$0.00</dd></div>
+      <div><dt>Tax (8%)</dt><dd id="cart-tax">$0.00</dd></div>
+      <div class="grand"><dt>Total</dt><dd id="cart-total">$0.00</dd></div>
+    </dl>
+
+    <div class="cart-panel__actions">
+      <button id="cart-clear" class="ghost">Empty cart</button>
+      <button id="checkout">Checkout</button>
+    </div>
+  </aside>
+
+  <dialog id="product-dialog" aria-labelledby="product-dialog-title">
+    <form id="product-form" novalidate>
+      <h2 id="product-dialog-title">New product</h2>
+      <input type="hidden" name="id">
+
+      <label>Title
+        <input name="title" required maxlength="100" autocomplete="off">
+        <small class="field-error" data-error="title"></small>
+      </label>
+
+      <label>Price (USD)
+        <input name="price" type="number" step="0.01" min="0" required>
+        <small class="field-error" data-error="price"></small>
+      </label>
+
+      <label>Category
+        <input name="category" list="category-options" required autocomplete="off">
+        <datalist id="category-options"></datalist>
+        <small class="field-error" data-error="category"></small>
+      </label>
+
+      <label>Stock
+        <input name="stock" type="number" step="1" min="0" required>
+        <small class="field-error" data-error="stock"></small>
+      </label>
+
+      <label>Brand (optional)
+        <input name="brand" maxlength="50" autocomplete="off">
+        <small class="field-error" data-error="brand"></small>
+      </label>
+
+      <label>Description (optional)
+        <textarea name="description" rows="3" maxlength="500"></textarea>
+        <small class="field-error" data-error="description"></small>
+      </label>
+
+      <section class="image-upload-section" aria-label="Product image">
+        <label>Product image URL (optional)
+          <input name="imageUrl" type="url" placeholder="https://example.com/product.jpg">
+        </label>
+        <div class="image-upload-row">
+          <label class="upload-button" for="product-image-file">📷 Upload photo</label>
+          <input id="product-image-file" name="imageFile" type="file" accept="image/*">
+          <button type="button" class="ghost image-remove" id="remove-product-image">Remove image</button>
+        </div>
+        <p class="image-help">Upload JPG, PNG, WEBP or another image format. Max 10 MB.</p>
+        <div id="image-preview-wrap" class="image-preview-wrap" hidden>
+          <img id="image-preview" alt="Product image preview">
+          <span>Image preview</span>
+        </div>
+      </section>
+
+      <div class="dialog-actions">
+        <button type="button" class="ghost" data-cancel>Cancel</button>
+        <button type="submit">Save</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div id="toasts" class="toasts" aria-live="polite"></div>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
